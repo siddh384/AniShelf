@@ -7,6 +7,19 @@ datasource db {
   provider = "postgresql"
 }
 
+enum MediaType {
+  ANIME
+  MANGA
+}
+
+enum MediaStatus {
+  CURRENT
+  COMPLETED
+  ON_HOLD
+  DROPPED
+  PLANNING
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -15,8 +28,34 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
+
+  shelfItems    ShelfItem[]
+
+  @@map("user")
+
   sessions      Session[]
   accounts      Account[]
+}
+
+model ShelfItem {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiId       Int
+  type        MediaType
+  
+  title       String
+  posterUrl   String?
+  
+  status      MediaStatus @default(PLANNING)
+  progress    Int         @default(0)
+  rating      Int?
+  review      String?     @db.Text
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([userId, apiId]) 
 }
 
 model Session {
