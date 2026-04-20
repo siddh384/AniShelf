@@ -8,16 +8,21 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
+import Navbar from "@/components/Navbar";
+import { ThemeProvider } from "@/components/theme-provider";
 
 // 1. Create a Root Route (This is the wrapper for your whole app)
 const rootRoute = createRootRoute({
   component: () => (
-    <>
-      {/* Outlet is where the current page (Home or Auth) will be injected */}
-      <Outlet />
-      {/* Toaster stays at the root so it works everywhere! */}
-      <Toaster position="bottom-right" theme="dark" />
-    </>
+    <ThemeProvider defaultTheme="dark" storageKey="anishelf-theme">
+      <div className="min-h-screen bg-[#f4f9fd] dark:bg-[#050c1a] text-[#050c1a] dark:text-white flex flex-col transition-colors duration-300">
+        <Navbar />
+        <main className="flex-1 flex flex-col">
+          <Outlet />
+        </main>
+        <Toaster position="bottom-right" />
+      </div>
+    </ThemeProvider>
   ),
 });
 
