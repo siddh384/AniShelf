@@ -38,8 +38,8 @@ export default function Navbar() {
   // Move links to a constant to avoid repeating code
   const navLinks = [
     { to: "/", label: "Home", active: true },
-    { to: "/", label: "Anime", disabled: true },
-    { to: "/", label: "Manga", disabled: true },
+    { to: "/anime", label: "Anime", disabled: false },
+    { to: "/manga", label: "Manga", disabled: false },
     { to: "/", label: "Shelf", disabled: true },
   ];
 
