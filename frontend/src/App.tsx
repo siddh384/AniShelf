@@ -1,5 +1,6 @@
 import Anime from "./pages/Anime";
 import Manga from "./pages/Manga";
+import Details from "./pages/Details";
 
 import {
   RouterProvider,
@@ -55,12 +56,26 @@ const authRoute = createRoute({
   component: Auth,
 });
 
+const animeDetailsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/anime/$id",
+  component: () => <Details type="ANIME" />,
+});
+
+const mangaDetailsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/manga/$id",
+  component: () => <Details type="MANGA" />,
+});
+
 // 4. Snap them all together into a Route Tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
   authRoute,
   animeRoute,
   mangaRoute,
+  animeDetailsRoute,
+  mangaDetailsRoute,
 ]);
 
 // 5. Initialize the Router

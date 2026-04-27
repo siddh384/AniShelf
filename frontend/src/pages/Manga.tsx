@@ -11,6 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Link } from "@tanstack/react-router";
 
 export default function Manga() {
   const [trending, setTrending] = useState<any[]>([]);
@@ -55,7 +56,11 @@ export default function Manga() {
             key={item.id}
             className="pl-4 basis-1/2 md:basis-1/4 lg:basis-1/5"
           >
-            <div className="space-y-3 group cursor-pointer">
+            <Link
+              to="/manga/$id"
+              params={{ id: item.id.toString() }}
+              className="space-y-3 group cursor-pointer block"
+            >
               <div className="relative aspect-[2/3] overflow-hidden rounded-xl border border-[#cae8fa] dark:border-[#1e3356] transition-colors duration-300 group-hover:border-[#4f8ef5] dark:group-hover:border-[#3b7de9] shadow-md">
                 <img
                   src={item.coverImage.extraLarge}
@@ -66,7 +71,7 @@ export default function Manga() {
               <h4 className="text-sm font-semibold text-[#1e3356] dark:text-[#a8c8f0] line-clamp-2 leading-tight group-hover:text-[#4f8ef5] dark:group-hover:text-white transition-colors">
                 {item.title.english || item.title.romaji}
               </h4>
-            </div>
+            </Link>
           </CarouselItem>
         ))}
       </CarouselContent>
