@@ -50,3 +50,84 @@ export const fetchMedia = async (
 // Legacy fetchers for the Home page
 export const fetchTrendingAnime = () => fetchMedia("ANIME", "TRENDING_DESC");
 export const fetchTrendingManga = () => fetchMedia("MANGA", "TRENDING_DESC");
+
+// Add this to the BOTTOM of frontend/src/lib/anilist.ts
+
+const GET_MEDIA_DETAILS_QUERY = `
+  query ($id: Int, $type: MediaType) {
+    Media(id: $id, type: $type) {
+      id
+      title {
+        romaji
+        english
+      }
+      coverImage {
+        extraLarge
+      }
+      bannerImage
+      description(asHtml: false)
+      averageScore
+      rankings {
+        rank
+        type
+        context
+        year
+      }
+      characters(sort: ROLE, perPage: 12) {
+        edges {
+          role
+          node {
+            id
+            name { full }
+            image { large }
+          }
+          voiceActors(language: JAPANESE, sort: ROLE) {
+            id
+            name { full }
+            image { large }
+          }
+        }
+      }
+      reviews(perPage: 5, sort: RATING_DESC) {
+        nodes {
+          id
+          summary
+          rating
+          user {
+            name
+            avatar { large }
+          }
+        }
+      }
+      recommendations(perPage: 15, sort: RATING_DESC) {
+        nodes {
+          mediaRecommendation {
+            id
+            title { romaji english }
+            coverImage { extraLarge }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const fetchMediaDetails = async (
+  id: number,
+  type: "ANIME" | "MANGA",
+) => {
+  try {
+    const response: any = await anilistApi
+      .post("", {
+        json: {
+          query: GET_MEDIA_DETAILS_QUERY,
+          variables: { id, type },
+        },
+      })
+      .json();
+    return response.data.Media;
+  } catch (error) {
+    console.error(`Failed to fetch details for ID ${id}:`, error);
+    return null;
+  }
+};
