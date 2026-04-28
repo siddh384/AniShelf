@@ -40,7 +40,7 @@ export default function Navbar() {
     { to: "/", label: "Home", active: true },
     { to: "/anime", label: "Anime", disabled: false },
     { to: "/manga", label: "Manga", disabled: false },
-    { to: "/", label: "Shelf", disabled: true },
+    { to: "/shelf", label: "Shelf", disabled: false },
   ];
 
   return (

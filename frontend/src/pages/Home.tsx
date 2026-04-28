@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchTrendingAnime, fetchTrendingManga } from "@/lib/anilist";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+// import { Search } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -11,7 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Link } from "@tanstack/react-router";
-// import { Link } from "@tanstack/react-router";
+import { SearchBar } from "@/components/SearchBar";
 
 export default function Home() {
   const [trendingAnime, setTrendingAnime] = useState<any[]>([]);
@@ -122,12 +122,14 @@ export default function Home() {
               >
                 {heroMedia.title.english || heroMedia.title.romaji}
               </h2>
-              <Button
-                className="w-fit bg-[#3b7de9] hover:bg-[#2563cc] text-white font-semibold rounded-full px-8 shadow-lg"
-                onClick={() => {}}
-              >
-                Know More
-              </Button>
+              <Link to="/anime/$id" params={{ id: heroMedia.id.toString() }}>
+                <Button
+                  className="w-fit bg-[#3b7de9] hover:bg-[#2563cc] text-white font-semibold rounded-full px-8 shadow-lg"
+                  onClick={() => {}}
+                >
+                  Know More
+                </Button>
+              </Link>
             </div>
 
             {/* Right Side: Floating Text & Search Bar */}
@@ -142,13 +144,7 @@ export default function Home() {
                 Save those you want to see
               </p>
 
-              <div className="relative w-full max-w-md mt-4">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#1e3356] dark:text-white/70" />
-                <Input
-                  placeholder="Search anime, manga..."
-                  className="pl-12 h-14 bg-white/60 dark:bg-black/40 backdrop-blur-md border-[#cae8fa] dark:border-white/20 text-[#050c1a] dark:text-white rounded-2xl focus-visible:ring-[#4f8ef5] placeholder:text-[#1e3356]/70 dark:placeholder:text-white/60 shadow-xl text-lg"
-                />
-              </div>
+              <SearchBar />
             </div>
           </div>
         </div>

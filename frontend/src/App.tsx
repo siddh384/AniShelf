@@ -14,6 +14,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import Shelf from "./pages/Shelf";
 
 // 1. Create a Root Route (This is the wrapper for your whole app)
 const rootRoute = createRootRoute({
@@ -68,6 +69,12 @@ const mangaDetailsRoute = createRoute({
   component: () => <Details type="MANGA" />,
 });
 
+const shelfRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/shelf",
+  component: Shelf,
+});
+
 // 4. Snap them all together into a Route Tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -76,6 +83,7 @@ const routeTree = rootRoute.addChildren([
   mangaRoute,
   animeDetailsRoute,
   mangaDetailsRoute,
+  shelfRoute,
 ]);
 
 // 5. Initialize the Router
