@@ -10,7 +10,7 @@ const adapter = new PrismaPg({
 });
 
 // 2. Pass the adapter to the new client
-const prisma = new PrismaClient({ adapter });
+export const prisma = new PrismaClient({ adapter });
 
 export const auth = betterAuth({
   baseURL: "http://localhost:3000",

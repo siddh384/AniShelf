@@ -131,3 +131,39 @@ export const fetchMediaDetails = async (
     return null;
   }
 };
+
+const SEARCH_QUERY = `
+  query ($search: String, $type: MediaType) {
+    Page(page: 1, perPage: 5) {
+      media(search: $search, type: $type, sort: POPULARITY_DESC, isAdult: false) {
+        id
+        type
+        title {
+          romaji
+          english
+        }
+        coverImage {
+          medium
+        }
+      }
+    }
+  }
+`;
+
+// If no type is provided, it searches BOTH Anime and Manga!
+export const searchMedia = async (search: string, type?: "ANIME" | "MANGA") => {
+  try {
+    const response: any = await anilistApi
+      .post("", {
+        json: {
+          query: SEARCH_QUERY,
+          variables: { search, type },
+        },
+      })
+      .json();
+    return response.data.Page.media;
+  } catch (error) {
+    console.error("Failed to search:", error);
+    return [];
+  }
+};

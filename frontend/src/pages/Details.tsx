@@ -18,14 +18,44 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import ky from "ky";
+
 export default function Details({ type }: { type: "ANIME" | "MANGA" }) {
   // TanStack Router hook to grab the ID from the URL (e.g., /anime/21 -> grabs '21')
   const { id } = useParams({ strict: false });
+  const { data: session } = authClient.useSession();
 
   const [media, setMedia] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [descExpanded, setDescExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  const handleAddToList = async (status: string) => {
+    if (!session) {
+      toast.error("You must login to use this feature! 🔒");
+      return;
+    }
+
+    try {
+      // Send the data to the new backend route we just made
+      // (Ensure the URL matches your actual backend port, usually 3000 or 8787)
+      await ky.post("http://localhost:3000/api/shelf", {
+        json: {
+          apiId: media.id,
+          type: type,
+          title: media.title.english || media.title.romaji,
+          posterUrl: media.coverImage.extraLarge,
+          status: status,
+        },
+        credentials: "include",
+      });
+      toast.success(`Successfully added to ${status.replace("_", " ")}! 🚀`);
+    } catch (error) {
+      toast.error("Failed to save to shelf. Is the backend running?");
+    }
+  };
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
@@ -94,19 +124,41 @@ export default function Details({ type }: { type: "ANIME" | "MANGA" }) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                disabled
-                className="w-full bg-[#4f8ef5] hover:bg-[#3b7de9] text-white font-bold flex justify-between items-center opacity-80 cursor-not-allowed"
-              >
+              <Button className="w-full bg-[#4f8ef5] hover:bg-[#3b7de9] text-white font-bold flex justify-between items-center opacity-80 cursor-pointer">
                 Add to List <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[150px] md:w-[250px] bg-[#0b1629] border-[#1e3356] text-[#a8c8f0]">
-              <DropdownMenuItem disabled>CURRENT</DropdownMenuItem>
-              <DropdownMenuItem disabled>COMPLETED</DropdownMenuItem>
-              <DropdownMenuItem disabled>ON_HOLD</DropdownMenuItem>
-              <DropdownMenuItem disabled>DROPPED</DropdownMenuItem>
-              <DropdownMenuItem disabled>PLANNING</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleAddToList("CURRENT")}
+                className="cursor-pointer hover:bg-[#1e3356] hover:text-white"
+              >
+                CURRENT
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleAddToList("PLANNING")}
+                className="cursor-pointer hover:bg-[#1e3356] hover:text-white"
+              >
+                PLANNING
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleAddToList("COMPLETED")}
+                className="cursor-pointer hover:bg-[#1e3356] hover:text-white"
+              >
+                COMPLETED
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleAddToList("ON_HOLD")}
+                className="cursor-pointer hover:bg-[#1e3356] hover:text-white"
+              >
+                ON HOLD
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleAddToList("DROPPED")}
+                className="cursor-pointer text-red-400 hover:bg-red-950/50 hover:text-red-300"
+              >
+                DROPPED
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
