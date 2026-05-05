@@ -118,22 +118,36 @@ export default function Navbar() {
           {/* RIGHT: User Profile Dropdown */}
           <div className="flex items-center gap-4">
             <DropdownMenu>
-              <DropdownMenuTrigger className="outline-none">
-                <Avatar className="h-9 w-9 border border-[#cae8fa] dark:border-[#1e3356] hover:border-[#4f8ef5] transition-colors cursor-pointer">
-                  <AvatarImage src={session?.user?.image || ""} />
-                  <AvatarFallback className="bg-[#f4f9fd] dark:bg-[#0f1e38] text-[#3b7de9] dark:text-[#a8c8f0]">
-                    {session?.user?.name?.charAt(0).toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-10 w-10 rounded-full border-2 border-[#1e3356] hover:border-[#4f8ef5] overflow-hidden p-0"
+                >
+                  {session?.user?.image ? (
+                    <img
+                      src={session.user.image}
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-[#a8c8f0] font-bold">
+                      {session?.user?.name
+                        ? session.user.name.charAt(0).toUpperCase()
+                        : "U"}
+                    </span>
+                  )}
+                </Button>
               </DropdownMenuTrigger>
               {/* ... Dropdown content remains same as previous version ... */}
               <DropdownMenuContent
                 align="end"
                 className="w-48 bg-white dark:bg-[#0b1629] border-[#cae8fa] dark:border-[#1e3356] text-[#050c1a] dark:text-[#a8c8f0]"
               >
-                <DropdownMenuItem className="cursor-pointer focus:bg-[#f4f9fd] dark:focus:bg-[#162848]">
-                  View Profile
-                </DropdownMenuItem>
+                <Link to="/profile">
+                  <DropdownMenuItem className="cursor-pointer focus:bg-[#f4f9fd] dark:focus:bg-[#162848]">
+                    View Profile
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger className="cursor-pointer focus:bg-[#f4f9fd] dark:focus:bg-[#162848]">
                     Theme
