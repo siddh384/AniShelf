@@ -167,3 +167,33 @@ export const searchMedia = async (search: string, type?: "ANIME" | "MANGA") => {
     return [];
   }
 };
+
+const BIG_THREE_CHARS_QUERY = `
+  query {
+    onePiece: Media(id: 21) { characters(sort: ROLE, perPage: 8) { nodes { id name { full } image { large } } } }
+    naruto: Media(id: 20) { characters(sort: ROLE, perPage: 8) { nodes { id name { full } image { large } } } }
+    bleach: Media(id: 269) { characters(sort: ROLE, perPage: 8) { nodes { id name { full } image { large } } } }
+  }
+`;
+
+export const fetchAvatarCharacters = async () => {
+  try {
+    const response: any = await anilistApi
+      .post("", {
+        json: { query: BIG_THREE_CHARS_QUERY },
+      })
+      .json();
+
+    // Combine all characters into one flat array
+    const data = response.data;
+    const combined = [
+      ...data.onePiece.characters.nodes,
+      ...data.naruto.characters.nodes,
+      ...data.bleach.characters.nodes,
+    ];
+    return combined;
+  } catch (error) {
+    console.error("Failed to fetch avatars:", error);
+    return [];
+  }
+};
